@@ -32,20 +32,14 @@ execute "delete scheduled task" do
   only_if { omnibus_updater_task_exists?(task_name) }
 end
 
-execute "omnibus_install[#{File.basename(remote_path)}]" do
+execute "omnibus_install_#{File.basename(remote_path)}" do
   if node["platform_version"] >= "6"
     command "schtasks /Create /TN \"#{task_name}\" /TR \"#{task_command}\" /SC ONCE /ST #{t.strftime("%H:%M")} /RU SYSTEM /RL HIGHEST"
   else
     command "schtasks /Create /TN \"#{task_name}\" /TR \"#{task_command}\" /SC ONCE /ST #{t.strftime("%H:%M")} /RU SYSTEM"
   end
   action :nothing
-end
-
-ruby_block 'Omnibus Chef install notifier' do
-  block{ true }
-  action :nothing
-  subscribes :create, resources(:remote_file => "omnibus_remote[#{File.basename(remote_path)}]"), :immediately
-  notifies :run, resources(:execute => "omnibus_install[#{File.basename(remote_path)}]"), :delayed
+  subscribes :run, "remote_file[omnibus_remote_#{File.basename(remote_path)}]", :delayed
 end
 
 include_recipe 'omnibus_updater_windows::old_package_cleaner'
