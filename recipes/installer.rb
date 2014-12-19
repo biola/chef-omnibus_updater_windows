@@ -22,7 +22,7 @@ remote_path = node[:omnibus_updater][:full_url].to_s
 
 # Scheduled task options
 task_name = "Upgrade Chef client"
-task_command = "msiexec.exe /i \"#{node[:omnibus_updater][:cache_dir]}\\#{File.basename(remote_path)}\" /qn /quiet /norestart ADDLOCAL=\\\"ChefClientFeature,ChefServiceFeature\\\""
+task_command = "msiexec.exe /qn /i \"#{node[:omnibus_updater][:cache_dir]}\\#{File.basename(remote_path)}\""
 t = Time.now + (node[:omnibus_updater][:scheduled_task_delay] * 60)
 
 # Remove any existing scheduled task
