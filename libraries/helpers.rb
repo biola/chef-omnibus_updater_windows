@@ -20,7 +20,7 @@
 def omnibus_updater_task_exists?(task_name)
   value = true
   # Windows 2008+
-  if node["platform_version"] >= "6"
+  if node[:platform_version] >= "6"
     output = `schtasks /Query /TN "#{task_name}" 2> NUL | find /c \"#{task_name}\"`
     value = (output.chomp == "0") ? false : true;
   # Windows 2003

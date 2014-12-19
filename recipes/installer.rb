@@ -33,7 +33,7 @@ execute "delete scheduled task" do
 end
 
 execute "omnibus_install_#{File.basename(remote_path)}" do
-  if node["platform_version"] >= "6"
+  if node[:platform_version] >= "6"
     command "schtasks /Create /TN \"#{task_name}\" /TR \"#{task_command}\" /SC ONCE /ST #{t.strftime("%H:%M")} /RU SYSTEM /RL HIGHEST"
   else
     command "schtasks /Create /TN \"#{task_name}\" /TR \"#{task_command}\" /SC ONCE /ST #{t.strftime("%H:%M")} /RU SYSTEM"
