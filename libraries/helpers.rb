@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-def omnibus_updater_task_exists(task_name)
+def omnibus_updater_task_exists?(task_name)
   value = true
   # Windows 2008+
   if node["platform_version"] >= "6"

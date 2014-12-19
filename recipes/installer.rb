@@ -29,7 +29,7 @@ t = Time.now + (node[:omnibus_updater][:scheduled_task_delay] * 60)
 execute "delete scheduled task" do
   command "schtasks /Delete /F /TN \"#{task_name}\""
   action :run
-  only_if { omnibus_updater_task_exists(task_name) }
+  only_if { omnibus_updater_task_exists?(task_name) }
 end
 
 execute "omnibus_install[#{File.basename(remote_path)}]" do
