@@ -1,4 +1,4 @@
-module OmnibusTrucker
+module OmnibusTruckerWindows
   class << self
     URL_MAP = {
       :p => :platform, :pv => :platform_version, :m => :machine,
