@@ -23,7 +23,7 @@ remote_path = node[:omnibus_updater][:full_url].to_s
 # Scheduled task options
 task_name = "Upgrade Chef client"
 task_command = "msiexec.exe /qn /i \"#{node[:omnibus_updater][:cache_dir]}\\#{File.basename(remote_path)}\""
-t = Time.now + (node[:omnibus_updater][:scheduled_task_delay] * 60)
+t = -> { Time.now + (node[:omnibus_updater][:scheduled_task_delay] * 60) }
 
 # Remove any existing scheduled task
 execute "delete scheduled task" do
@@ -34,9 +34,9 @@ end
 
 execute "omnibus_install_#{File.basename(remote_path)}" do
   if node[:platform_version] >= "6"
-    command "schtasks /Create /TN \"#{task_name}\" /TR \"#{task_command}\" /SC ONCE /ST #{t.strftime("%H:%M")} /RU SYSTEM /RL HIGHEST"
+    command lazy { "schtasks /Create /TN \"#{task_name}\" /TR \"#{task_command}\" /SC ONCE /ST #{t.call.strftime("%H:%M")} /RU SYSTEM /RL HIGHEST" }
   else
-    command "schtasks /Create /TN \"#{task_name}\" /TR \"#{task_command}\" /SC ONCE /ST #{t.strftime("%H:%M")} /RU SYSTEM"
+    command lazy { "schtasks /Create /TN \"#{task_name}\" /TR \"#{task_command}\" /SC ONCE /ST #{t.call.strftime("%H:%M")} /RU SYSTEM" }
   end
   action :nothing
   subscribes :run, "remote_file[omnibus_remote_#{File.basename(remote_path)}]", :delayed
